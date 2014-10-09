@@ -1,14 +1,15 @@
-#!/usr/bin/env python
+#http://stackoverflow.com/questions/18172851/deleting-dataframe-row-in-pandas-based-on-column-value
+#for replacement of a given value with NaN
 
+#!/usr/bin/env python
 
 
 import argparse, os, sys, csv, IPython
 import pandas
 import pdb
-import glob
 from pandas import *
 from IPython import get_ipython
-from glob import glob
+
 
 #output and input file name to give with the script
 parser = argparse.ArgumentParser()
@@ -22,22 +23,39 @@ input_file = args.snp_table
 
 #read in file as dataframe
 df = read_csv(input_file, index_col=[0,1], header=[0,1], dtype=unicode)
-pdb.set_trace()
+df=df.drop('syn/nsyn/intergenic', axis=1, level=1)
+
+
 #replaces lines with "No Hits" with NaN and removes lines with NaN in qbase columns
 no_hit= df.mask(df=='No Hit')
-header_list =no_hit.columns.values
-
 removed=no_hit.dropna()
-#level=[qb[1] for qb in header_list if "qbase:" in qb[1]]
-qindexes= []
-for i, v in enumerate(header_list):
-    if 'qbase:' in v[1]:
-        qindexes.append(i)
 
-#identical_a=removed.mask(df[3:qindexes[-1]], 'A')
+
+#replaces lines with indel
+
+indel=removed.mask(removed=='indel')
+indel2=indel.dropna()
+
+
+#removes lines with /
+#slash=indel2.replace('/.*', 'NaN')
+#slash2=slash.dropna()
+
+
 # remove identical lines
+bases=['A','C','G','T']
+
+
+for i in bases:
+
+    indel2=indel2[indel2 !=i]  #!=i
+    indel2=indel2.dropna(how='all')
+    indel2=indel2.fillna(i)
+#i
 pdb.set_trace()
+
+
 
 #save file with output name
 with open(output_file,'w') as output:
-    XXX.to_csv(output)
+    indel2.to_csv(output)
