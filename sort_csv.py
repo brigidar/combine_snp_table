@@ -37,10 +37,6 @@ indel=removed.mask(removed=='indel')
 indel2=indel.dropna()
 
 
-#removes lines with /
-#slash=indel2.replace('/.*', 'NaN')
-#slash2=slash.dropna()
-
 
 # remove identical lines
 bases=['A','C','G','T']
@@ -51,7 +47,21 @@ for i in bases:
     indel2=indel2[indel2 !=i]  #!=i
     indel2=indel2.dropna(how='all')
     indel2=indel2.fillna(i)
-#i
+
+
+#creates dataframe with rows that have '/' in it
+count_qbase=indel2.columns.values
+qindexes=[]
+for i, v in enumerate(count_qbase):
+    if 'qbase:' in v[1]:
+        qindexes.append(i)
+
+empty=DataFrame()
+
+
+for x in qindexes:
+    empty=empty.append((indel2[(indel2.iloc[:,x]).str.contains('/')]))
+
 pdb.set_trace()
 
 
