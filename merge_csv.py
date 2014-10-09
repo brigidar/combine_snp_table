@@ -24,22 +24,25 @@ output_file = args.output
 #files = ipython.magic('ls *.csv')
 files = glob('*.csv')
 
-# concatenates them all together
-data = [read_csv(f, header=0, index_col=0, dtype=unicode) for f in files]
+# concatenates them all together and reads molecule and refpos as indexes
+data = [read_csv(f, header=0, index_col=[0,1], dtype=unicode) for f in files]
 data = [d.T for d in data]
 d = concat(data, keys=files)
 # transpose the table to have the correct headers
 df = d.T
 
+
 # find columns that have qbase in it and add them together with the position and the refbase and molecule name
-count_qbase=list(df.columns.values)
-qindexes= []
+count_qbase=df.columns.values
+qindexes=[]
 for i, v in enumerate(count_qbase):
     if 'qbase:' in v[1]:
      qindexes.append(i)
 df2=(df.iloc[:,qindexes]).T
-df3=(df.iloc[:,0:3]).T
-final=(concat([df3, df2])).T
+df3=(df.iloc[:,0:1]).T
+final=(concat([df3,df2]).T)
+
+
 
 # save new csv table
 
