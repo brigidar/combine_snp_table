@@ -39,7 +39,7 @@ for i, v in enumerate(count_qbase):
     if 'qbase:' in v[1]:
      qindexes.append(i)
 df2=(df.iloc[:,qindexes]).T
-df3=(df.iloc[:,0:1]).T
+df3=(df.iloc[:,0:2]).T
 final=(concat([df3,df2]).T)
 
 
