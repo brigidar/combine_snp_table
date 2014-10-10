@@ -62,10 +62,12 @@ empty=DataFrame()
 for x in qindexes:
     empty=empty.append((indel2[(indel2.iloc[:,x]).str.contains('/')]))
 
-pdb.set_trace()
 
+
+# remove rows that are in empty
+final=indel2.drop(empty.index[:])
 
 
 #save file with output name
 with open(output_file,'w') as output:
-    indel2.to_csv(output)
+    final.to_csv(output)
